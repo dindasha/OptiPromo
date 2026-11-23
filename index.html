@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Fuzzy Sugeno - Penentuan Diskon Produk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-indigo-600 text-white shadow-md py-6 px-4 text-center">
+        <h1 class="text-2xl font-bold">Aplikasi Penentuan Diskon E-Commerce</h1>
+        <p class="text-indigo-200 text-sm mt-1">Implementasi Metode Logika Fuzzy Sugeno Orde Nol (UAS Project)</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-lg font-semibold text-slate-800 mb-4 pb-2 border-b">Parameter Input Produk</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Sisa Stok Barang (0 - 100 unit):</label>
+                    <input type="number" id="inputStok" value="65" min="0" max="100" 
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <p class="text-xs text-slate-400 mt-1">Kategori: Sedikit (0-30), Sedang (20-70), Banyak (60-100)</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Jumlah Penjualan / Bulan (0 - 50 unit):</label>
+                    <input type="number" id="inputPenjualan" value="18" min="0" max="50" 
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <p class="text-xs text-slate-400 mt-1">Kategori: Sepi (0-20), Normal (15-35), Laris (30-50)</p>
+                </div>
+
+                <button onclick="hitungFuzzy()" 
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition duration-200 shadow-sm">
+                    Hitung Rekomendasi Diskon
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-slate-800 mb-4 pb-2 border-b">Hasil Perhitungan Fuzzy</h2>
+                
+                <div class="text-center py-6 bg-indigo-50 rounded-xl mb-4">
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Rekomendasi Diskon</span>
+                    <div id="hasilDiskon" class="text-4xl font-extrabold text-indigo-900 mt-1">27.35%</div>
+                </div>
+
+                <div class="space-y-2 text-sm text-slate-600">
+                    <p class="flex justify-between"><span>Derajat Stok Aktif:</span> <span id="infoStok" class="font-medium text-slate-800">-</span></p>
+                    <p class="flex justify-between"><span>Derajat Penjualan Aktif:</span> <span id="infoPenjualan" class="font-medium text-slate-800">-</span></p>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <p class="text-xs text-slate-400 text-center">Metode Sugeno Orde Nol • Kelompok UAS Fuzzy Logic</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-4 text-xs text-slate-400">
+        &copy; 2026 - Universitas Lampung (Project UAS)
+    </footer>
+
+    <script>
+        function trapesiumKiri(x, a, b) {
+            if (x <= a) return 1;
+            if (x >= b) return 0;
+            return (b - x) / (b - a);
+        }
+
+        function trapesiumKanan(x, a, b) {
+            if (x <= a) return 0;
+            if (x >= b) return 1;
+            return (x - a) / (b - a);
+        }
+
+        function segitiga(x, a, b, c) {
+            if (x <= a || x >= c) return 0;
+            if (x > a && x <= b) return (x - a) / (b - a);
+            if (x > b && x < c) return (c - x) / (c - b);
+            return 0;
+        }
+
+        function hitungFuzzy() {
+            let x = parseFloat(document.getElementById('inputStok').value);
+            let y = parseFloat(document.getElementById('inputPenjualan').value);
+
+            if (isNaN(x) || isNaN(y)) {
+                alert("Mohon masukkan angka yang valid!");
+                return;
+            }
+
+            let stokSedikit = trapesiumKiri(x, 15, 30);
+            let stokSedang  = segitiga(x, 20, 45, 70);
+            let stokBanyak  = trapesiumKanan(x, 60, 80);
+
+            let jualSepi    = trapesiumKiri(y, 10, 20);
+            let jualNormal  = segitiga(y, 15, 25, 35);
+            let jualLaris   = trapesiumKanan(y, 30, 40);
+
+            let rules = [
+                { alpha: Math.min(stokSedikit, jualSepi), z: 10 },
+                { alpha: Math.min(stokSedikit, jualNormal), z: 0 },   
+                { alpha: Math.min(stokSedikit, jualLaris), z: 0 },   
+                { alpha: Math.min(stokSedang, jualSepi), z: 25 },    
+                { alpha: Math.min(stokSedang, jualNormal), z: 10 },   
+                { alpha: Math.min(stokSedang, jualLaris), z: 0 },     
+                { alpha: Math.min(stokBanyak, jualSepi), z: 50 },    
+                { alpha: Math.min(stokBanyak, jualNormal), z: 25 },   
+                { alpha: Math.min(stokBanyak, jualLaris), z: 10 }     
+            ];
+
+            let pembilang = 0;
+            let penyebut = 0;
+
+            rules.forEach(r => {
+                pembilang += r.alpha * r.z;
+                penyebut += r.alpha;
+            });
+
+            let hasilZ = (penyebut === 0) ? 0 : (pembilang / penyebut);
+
+            document.getElementById('hasilDiskon').innerText = hasilZ.toFixed(2) + '%';
+            document.getElementById('infoStok').innerText = `Sedikit(${stokSedikit.toFixed(2)}), Sedang(${stokSedang.toFixed(2)}), Banyak(${stokBanyak.toFixed(2)})`;
+            document.getElementById('infoPenjualan').innerText = `Sepi(${jualSepi.toFixed(2)}), Normal(${jualNormal.toFixed(2)}), Laris(${jualLaris.toFixed(2)})`;
+        }
+
+        window.onload = hitungFuzzy;
+    </script>
+</body>
+</html>
