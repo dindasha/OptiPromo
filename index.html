@@ -1,136 +1,421 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Fuzzy Sugeno - Penentuan Diskon Produk</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OptiPromo | Sistem Pendukung Keputusan Diskon Skincare & Beauty</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="assets/style.css">
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col justify-between">
+<body class="flex flex-col min-h-screen">
 
-    <header class="bg-indigo-600 text-white shadow-md py-6 px-4 text-center">
-        <h1 class="text-2xl font-bold">Aplikasi Penentuan Diskon E-Commerce</h1>
-        <p class="text-indigo-200 text-sm mt-1">Implementasi Metode Logika Fuzzy Sugeno Orde Nol (UAS Project)</p>
-    </header>
+  <header class="bg-white/85 backdrop-blur-md border-b border-[#EFE6E4] sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-full bg-[#C44D68] text-white flex items-center justify-center font-bold text-xs tracking-wider">
+          OP
+        </span>
+        <div>
+          <span class="font-editorial text-xl font-bold tracking-tight text-[#2A2426]">OptiPromo</span>
+          <span class="hidden sm:inline-block ml-2 text-[11px] text-[#A39699] font-medium tracking-wide">
+            Skincare Pricing Decision System
+          </span>
+        </div>
+      </a>
 
-    <main class="max-w-4xl mx-auto px-4 py-8 w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+      <nav class="flex items-center gap-1 sm:gap-2">
+        <a href="index.html" class="px-4 py-2 rounded-full text-xs font-semibold bg-[#2A2426] text-white transition">
+          Kalkulator
+        </a>
+        <a href="hasil.html" class="px-4 py-2 rounded-full text-xs font-medium text-[#7A6F72] hover:text-[#2A2426] hover:bg-[#F6EFF0] transition">
+          Hasil & Analisis
+        </a>
+        <a href="aturan.html" class="px-4 py-2 rounded-full text-xs font-medium text-[#7A6F72] hover:text-[#2A2426] hover:bg-[#F6EFF0] transition">
+          9 Aturan
+        </a>
+        <a href="about.html" class="px-4 py-2 rounded-full text-xs font-medium text-[#7A6F72] hover:text-[#2A2426] hover:bg-[#F6EFF0] transition">
+          Tentang Tim
+        </a>
+      </nav>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-            <h2 class="text-lg font-semibold text-slate-800 mb-4 pb-2 border-b">Parameter Input Produk</h2>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-6xl w-full mx-auto px-6 py-8 space-y-10">
+    
+    <div class="beauty-card p-6 sm:p-10 bg-gradient-to-br from-white via-[#FCFAF9] to-[#F8F2F3] border-[#E8DCDA] overflow-hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+
+        <div class="lg:col-span-7 space-y-4">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-medium bg-[#F6EFF0] text-[#C44D68] border border-[#EEDCDA]">
+            <span>Beauty & Skincare Dynamic Pricing</span>
+            <span>&bull;</span>
+            <span class="font-mono">Fuzzy Sugeno</span>
+          </div>
+
+          <h1 class="font-editorial text-3xl sm:text-5xl text-[#2A2426] font-normal leading-[1.15] tracking-tight">
+            Keputusan Diskon Presisi untuk Produk Skincare Anda
+          </h1>
+
+          <p class="text-xs sm:text-sm text-[#7A6F72] leading-relaxed max-w-xl">
+            Optimalkan perputaran stok serum, moisturizer, toner, dan produk kecantikan sebelum batas penyimpanan tanpa memangkas margin keuntungan varian yang sedang laris.
+          </p>
+
+          <div class="pt-2 flex flex-wrap items-center gap-2">
+            <span class="text-xs text-[#A39699] font-medium mr-1">Contoh Kasus:</span>
+            <button type="button" onclick="loadPreset(65, 18, 'Glow Hydrating Serum')" class="preset-pill">
+              Serum (Stok 65, Jual 18)
+            </button>
+            <button type="button" onclick="loadPreset(25, 32, 'Barrier Repair Cream')" class="preset-pill">
+              Cream (Stok 25, Jual 32)
+            </button>
+            <button type="button" onclick="loadPreset(90, 5, 'Acne Calming Toner')" class="preset-pill">
+              Deadstock (Stok 90, Jual 5)
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-4">
+          
+          <div class="space-y-3">
+            <div class="beauty-card overflow-hidden p-2 bg-white border-[#EFE6E4] shadow-sm group">
+              <div class="relative overflow-hidden rounded-[20px] aspect-[4/5] bg-[#F4EFEB]">
+                <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80" 
+                     alt="Skincare Serum Bottle" 
+                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute bottom-2 left-2 right-2 px-2.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[10px] font-medium text-[#2A2426] flex items-center justify-between">
+                  <span>Hydra Serum</span>
+                  <span class="text-[#C44D68] font-bold">Laris</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-3.5 rounded-[22px] border border-[#EFE6E4] text-center">
+              <span class="text-[10px] uppercase tracking-wider text-[#A39699] font-medium block">Efisiensi Stok</span>
+              <span class="font-editorial text-lg text-[#2A2426] font-semibold">Bebas Deadstock</span>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-6">
+            <div class="bg-[#F6EFF0] p-3.5 rounded-[22px] border border-[#EEDCDA] text-center">
+              <span class="text-[10px] uppercase tracking-wider text-[#C44D68] font-semibold block">Metode Sugeno</span>
+              <span class="font-editorial text-lg text-[#2A2426] font-semibold">Weighted Avg</span>
+            </div>
+
+            <div class="beauty-card overflow-hidden p-2 bg-white border-[#EFE6E4] shadow-sm group">
+              <div class="relative overflow-hidden rounded-[20px] aspect-[4/5] bg-[#F4EFEB]">
+                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80" 
+                     alt="Skincare Texture Cream" 
+                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <div class="absolute bottom-2 left-2 right-2 px-2.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[10px] font-medium text-[#2A2426] flex items-center justify-between">
+                  <span>Barrier Cream</span>
+                  <span class="text-[#2A2426] font-bold">Stok Aman</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <div class="lg:col-span-5 space-y-6">
+        
+        <div class="beauty-card p-7 space-y-6">
+          <div class="border-b border-[#EFE6E4] pb-4">
+            <h2 class="font-editorial text-xl text-[#2A2426] font-medium">Input Data Skincare</h2>
+            <p class="text-xs text-[#A39699] mt-0.5">Ketik langsung angka parameter produk yang ingin dihitung</p>
+          </div>
+
+          <form id="fuzzyForm" onsubmit="event.preventDefault(); submitToResult();" class="space-y-5">
             
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Sisa Stok Barang (0 - 100 unit):</label>
-                    <input type="number" id="inputStok" value="65" min="0" max="100" 
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    <p class="text-xs text-slate-400 mt-1">Kategori: Sedikit (0-30), Sedang (20-70), Banyak (60-100)</p>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Jumlah Penjualan / Bulan (0 - 50 unit):</label>
-                    <input type="number" id="inputPenjualan" value="18" min="0" max="50" 
-                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    <p class="text-xs text-slate-400 mt-1">Kategori: Sepi (0-20), Normal (15-35), Laris (30-50)</p>
-                </div>
-
-                <button onclick="hitungFuzzy()" 
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition duration-200 shadow-sm">
-                    Hitung Rekomendasi Diskon
-                </button>
+            <div class="space-y-1.5">
+              <label for="inputNamaProduk" class="text-xs font-semibold text-[#2A2426] uppercase tracking-wider flex items-center justify-between">
+                <span>Nama Produk / Varian Skincare</span>
+                <span class="text-[10px] text-[#A39699] font-normal font-sans">Opsional</span>
+              </label>
+              <input type="text" id="inputNamaProduk" value="Glow Hydrating Serum 30ml" 
+                class="beauty-input w-full text-xs" placeholder="Contoh: Centella Calming Gel">
             </div>
+
+            <div class="space-y-2 pt-2 border-t border-[#F4EFEB]">
+              <div class="flex items-center justify-between">
+                <label for="inputStok" class="text-xs font-semibold text-[#2A2426] uppercase tracking-wider">
+                  Sisa Stok di Gudang
+                </label>
+                <span class="text-[11px] text-[#A39699]">Semesta: 0 - 100 Unit</span>
+              </div>
+
+              <div class="relative">
+                <input type="number" id="inputStok" min="0" max="100" value="65" step="1"
+                  oninput="handleStokChange(this.value)"
+                  class="beauty-input w-full text-base font-mono pr-16 font-semibold" placeholder="0">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-[#A39699] pointer-events-none">
+                  Unit
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between text-[11px] pt-1">
+                <span class="text-[#A39699]">Kategori: Sedikit &bull; Sedang &bull; Banyak</span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="adjustInput('inputStok', -5)" class="px-2 py-0.5 rounded-lg bg-[#FAF7F5] border border-[#EFE6E4] hover:bg-[#F6EFF0] text-[#7A6F72] font-mono text-xs">-5</button>
+                  <button type="button" onclick="adjustInput('inputStok', 5)" class="px-2 py-0.5 rounded-lg bg-[#FAF7F5] border border-[#EFE6E4] hover:bg-[#F6EFF0] text-[#7A6F72] font-mono text-xs">+5</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2 pt-2 border-t border-[#F4EFEB]">
+              <div class="flex items-center justify-between">
+                <label for="inputPenjualan" class="text-xs font-semibold text-[#2A2426] uppercase tracking-wider">
+                  Laju Penjualan per Bulan
+                </label>
+                <span class="text-[11px] text-[#A39699]">Semesta: 0 - 50 Unit</span>
+              </div>
+
+              <div class="relative">
+                <input type="number" id="inputPenjualan" min="0" max="50" value="18" step="1"
+                  oninput="handlePenjualanChange(this.value)"
+                  class="beauty-input w-full text-base font-mono pr-20 font-semibold" placeholder="0">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-[#A39699] pointer-events-none">
+                  Unit/Bln
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between text-[11px] pt-1">
+                <span class="text-[#A39699]">Kategori: Sepi &bull; Normal &bull; Laris</span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="adjustInput('inputPenjualan', -5)" class="px-2 py-0.5 rounded-lg bg-[#FAF7F5] border border-[#EFE6E4] hover:bg-[#F6EFF0] text-[#7A6F72] font-mono text-xs">-5</button>
+                  <button type="button" onclick="adjustInput('inputPenjualan', 5)" class="px-2 py-0.5 rounded-lg bg-[#FAF7F5] border border-[#EFE6E4] hover:bg-[#F6EFF0] text-[#7A6F72] font-mono text-xs">+5</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 space-y-3">
+              <button type="submit" class="w-full btn-beauty-primary text-xs uppercase tracking-wider py-3.5">
+                Hitung Rekomendasi Diskon
+              </button>
+              
+              <a href="hasil.html?stok=65&penjualan=18" id="linkDetailHasil" 
+                class="w-full btn-beauty-secondary text-xs py-2.5">
+                Buka Lembar Audit Perhitungan Lengkap
+              </a>
+            </div>
+
+          </form>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+        <div class="beauty-card p-6 space-y-3">
+          <div class="flex items-center justify-between border-b border-[#EFE6E4] pb-3">
+            <span class="text-xs font-semibold text-[#7A6F72] uppercase tracking-wider">
+              Derajat Keanggotaan Aktif (&mu;)
+            </span>
+            <span class="text-[11px] text-[#A39699] font-mono">Fuzzifikasi</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="bg-[#FAF7F5] p-3.5 rounded-2xl border border-[#EFE6E4] space-y-1">
+              <div class="font-medium text-[#2A2426]">Stok (<span id="txtStokEcho">65</span> unit)</div>
+              <div class="text-[11px] space-y-0.5 text-[#7A6F72] font-mono pt-1">
+                <div class="flex justify-between"><span>Sedikit:</span> <span id="muStokSedikit" class="font-bold text-[#C44D68]">0.00</span></div>
+                <div class="flex justify-between"><span>Sedang:</span> <span id="muStokSedang" class="font-bold text-[#2A2426]">0.20</span></div>
+                <div class="flex justify-between"><span>Banyak:</span> <span id="muStokBanyak" class="font-bold text-[#C44D68]">0.25</span></div>
+              </div>
+            </div>
+
+            <div class="bg-[#FAF7F5] p-3.5 rounded-2xl border border-[#EFE6E4] space-y-1">
+              <div class="font-medium text-[#2A2426]">Penjualan (<span id="txtJualEcho">18</span> unit)</div>
+              <div class="text-[11px] space-y-0.5 text-[#7A6F72] font-mono pt-1">
+                <div class="flex justify-between"><span>Sepi:</span> <span id="muJualSepi" class="font-bold text-[#C44D68]">0.20</span></div>
+                <div class="flex justify-between"><span>Normal:</span> <span id="muJualNormal" class="font-bold text-[#2A2426]">0.30</span></div>
+                <div class="flex justify-between"><span>Laris:</span> <span id="muJualLaris" class="font-bold text-[#A39699]">0.00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="lg:col-span-7 space-y-6">
+        
+        <div class="beauty-card p-8 bg-gradient-to-br from-white via-[#FCFAF9] to-[#FBF5F6] border-[#E8DCDA] relative overflow-hidden">
+          
+          <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-[#EFE6E4] pb-6">
             <div>
-                <h2 class="text-lg font-semibold text-slate-800 mb-4 pb-2 border-b">Hasil Perhitungan Fuzzy</h2>
-                
-                <div class="text-center py-6 bg-indigo-50 rounded-xl mb-4">
-                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Rekomendasi Diskon</span>
-                    <div id="hasilDiskon" class="text-4xl font-extrabold text-indigo-900 mt-1">27.35%</div>
-                </div>
-
-                <div class="space-y-2 text-sm text-slate-600">
-                    <p class="flex justify-between"><span>Derajat Stok Aktif:</span> <span id="infoStok" class="font-medium text-slate-800">-</span></p>
-                    <p class="flex justify-between"><span>Derajat Penjualan Aktif:</span> <span id="infoPenjualan" class="font-medium text-slate-800">-</span></p>
-                </div>
+              <span class="text-xs uppercase tracking-wider font-semibold text-[#A39699] block mb-1">
+                Rekomendasi Diskon Promosi
+              </span>
+              <div class="flex items-baseline gap-3">
+                <span id="outputDiskon" class="font-editorial text-5xl sm:text-6xl text-[#C44D68] font-semibold">
+                  27.35%
+                </span>
+                <span id="outputBadge" class="beauty-badge badge-rose text-xs">
+                  Promo Terarah
+                </span>
+              </div>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-slate-100">
-                <p class="text-xs text-slate-400 text-center">Metode Sugeno Orde Nol • Kelompok UAS Fuzzy Logic</p>
+            <div class="bg-white p-3.5 rounded-2xl border border-[#EFE6E4] text-xs space-y-1 max-w-[210px]">
+              <div class="text-[10px] text-[#A39699] uppercase tracking-wider">Formula Sugeno:</div>
+              <div class="font-mono text-[#7A6F72]">z = &Sigma;(&alpha;<sub>i</sub> &times; z<sub>i</sub>) / &Sigma;&alpha;<sub>i</sub></div>
+              <div id="quickMath" class="font-mono font-bold text-[#2A2426] text-[11px] pt-1">
+                = 23.25 / 0.85
+              </div>
             </div>
+          </div>
+
+          <div class="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-[#EFE6E4] space-y-1">
+              <span class="text-xs font-semibold text-[#C44D68] uppercase tracking-wider block">
+                Strategi Promosi Skincare
+              </span>
+              <p id="outputStrategi" class="text-xs text-[#7A6F72] leading-relaxed">
+                Tawarkan diskon bundling serum dengan toner atau voucher pembelian minimal untuk mendorong pembeli mencoba varian ini.
+              </p>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-[#EFE6E4] space-y-1">
+              <span class="text-xs font-semibold text-[#2A2426] uppercase tracking-wider block">
+                Manajemen Persediaan Gudang
+              </span>
+              <p id="outputStokAction" class="text-xs text-[#7A6F72] leading-relaxed">
+                Pertahankan stok pada batas aman; pantau tanggal kedaluwarsa (PAO) dan rotasi batch persediaan setiap minggu.
+              </p>
+            </div>
+          </div>
+
         </div>
 
-    </main>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <div class="beauty-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-semibold text-[#2A2426] uppercase tracking-wider">
+                Kurva Keanggotaan Stok
+              </h3>
+              <span class="text-[10px] font-mono text-[#A39699]">[0, 100] Unit</span>
+            </div>
+            <div class="h-44 w-full">
+              <canvas id="chartStok"></canvas>
+            </div>
+          </div>
 
-    <footer class="text-center py-4 text-xs text-slate-400">
-        &copy; 2026 - Universitas Lampung (Project UAS)
-    </footer>
+          <div class="beauty-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-xs font-semibold text-[#2A2426] uppercase tracking-wider">
+                Kurva Keanggotaan Penjualan
+              </h3>
+              <span class="text-[10px] font-mono text-[#A39699]">[0, 50] Unit/Bln</span>
+            </div>
+            <div class="h-44 w-full">
+              <canvas id="chartPenjualan"></canvas>
+            </div>
+          </div>
 
-    <script>
-        function trapesiumKiri(x, a, b) {
-            if (x <= a) return 1;
-            if (x >= b) return 0;
-            return (b - x) / (b - a);
-        }
+        </div>
 
-        function trapesiumKanan(x, a, b) {
-            if (x <= a) return 0;
-            if (x >= b) return 1;
-            return (x - a) / (b - a);
-        }
+      </div>
 
-        function segitiga(x, a, b, c) {
-            if (x <= a || x >= c) return 0;
-            if (x > a && x <= b) return (x - a) / (b - a);
-            if (x > b && x < c) return (c - x) / (c - b);
-            return 0;
-        }
+    </div>
 
-        function hitungFuzzy() {
-            let x = parseFloat(document.getElementById('inputStok').value);
-            let y = parseFloat(document.getElementById('inputPenjualan').value);
+  </main>
 
-            if (isNaN(x) || isNaN(y)) {
-                alert("Mohon masukkan angka yang valid!");
-                return;
-            }
+  <footer class="border-t border-[#EFE6E4] bg-white py-6 px-6 mt-12 text-center text-xs text-[#A39699]">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>
+        <span class="font-editorial text-sm font-semibold text-[#2A2426]">OptiPromo</span>
+        <span class="ml-1">&bull; Sistem Pakar Logika Fuzzy Sugeno Orde Nol</span>
+      </div>
+      <div>
+        S1 Sistem Informasi &bull; Universitas Lampung &bull; 2026
+      </div>
+    </div>
+  </footer>
 
-            let stokSedikit = trapesiumKiri(x, 15, 30);
-            let stokSedang  = segitiga(x, 20, 45, 70);
-            let stokBanyak  = trapesiumKanan(x, 60, 80);
+  <script src="assets/optipromo-core.js"></script>
+  <script src="assets/optipromo-charts.js"></script>
+  <script>
+    function handleStokChange(val) {
+      let num = parseFloat(val);
+      if (isNaN(num)) num = 0;
+      if (num < 0) num = 0;
+      if (num > 100) num = 100;
+      document.getElementById('txtStokEcho').innerText = num;
+      recalculate();
+    }
 
-            let jualSepi    = trapesiumKiri(y, 10, 20);
-            let jualNormal  = segitiga(y, 15, 25, 35);
-            let jualLaris   = trapesiumKanan(y, 30, 40);
+    function handlePenjualanChange(val) {
+      let num = parseFloat(val);
+      if (isNaN(num)) num = 0;
+      if (num < 0) num = 0;
+      if (num > 50) num = 50;
+      document.getElementById('txtJualEcho').innerText = num;
+      recalculate();
+    }
 
-            let rules = [
-                { alpha: Math.min(stokSedikit, jualSepi), z: 10 },
-                { alpha: Math.min(stokSedikit, jualNormal), z: 0 },   
-                { alpha: Math.min(stokSedikit, jualLaris), z: 0 },   
-                { alpha: Math.min(stokSedang, jualSepi), z: 25 },    
-                { alpha: Math.min(stokSedang, jualNormal), z: 10 },   
-                { alpha: Math.min(stokSedang, jualLaris), z: 0 },     
-                { alpha: Math.min(stokBanyak, jualSepi), z: 50 },    
-                { alpha: Math.min(stokBanyak, jualNormal), z: 25 },   
-                { alpha: Math.min(stokBanyak, jualLaris), z: 10 }     
-            ];
+    function adjustInput(inputId, delta) {
+      const el = document.getElementById(inputId);
+      let cur = parseFloat(el.value) || 0;
+      let min = parseFloat(el.min) || 0;
+      let max = parseFloat(el.max) || 100;
+      let next = Math.max(min, Math.min(max, cur + delta));
+      el.value = next;
+      if (inputId === 'inputStok') handleStokChange(next);
+      else handlePenjualanChange(next);
+    }
 
-            let pembilang = 0;
-            let penyebut = 0;
+    function loadPreset(s, p, name) {
+      document.getElementById('inputStok').value = s;
+      document.getElementById('inputPenjualan').value = p;
+      if (name) document.getElementById('inputNamaProduk').value = name;
+      document.getElementById('txtStokEcho').innerText = s;
+      document.getElementById('txtJualEcho').innerText = p;
+      recalculate();
+    }
 
-            rules.forEach(r => {
-                pembilang += r.alpha * r.z;
-                penyebut += r.alpha;
-            });
+    function recalculate() {
+      const s = parseFloat(document.getElementById('inputStok').value) || 0;
+      const p = parseFloat(document.getElementById('inputPenjualan').value) || 0;
 
-            let hasilZ = (penyebut === 0) ? 0 : (pembilang / penyebut);
+      const res = hitungOptiPromoFuzzy(s, p);
 
-            document.getElementById('hasilDiskon').innerText = hasilZ.toFixed(2) + '%';
-            document.getElementById('infoStok').innerText = `Sedikit(${stokSedikit.toFixed(2)}), Sedang(${stokSedang.toFixed(2)}), Banyak(${stokBanyak.toFixed(2)})`;
-            document.getElementById('infoPenjualan').innerText = `Sepi(${jualSepi.toFixed(2)}), Normal(${jualNormal.toFixed(2)}), Laris(${jualLaris.toFixed(2)})`;
-        }
+      document.getElementById('muStokSedikit').innerText = res.fuzzifikasi.muS.sedikit.toFixed(2);
+      document.getElementById('muStokSedang').innerText = res.fuzzifikasi.muS.sedang.toFixed(2);
+      document.getElementById('muStokBanyak').innerText = res.fuzzifikasi.muS.banyak.toFixed(2);
 
-        window.onload = hitungFuzzy;
-    </script>
+      document.getElementById('muJualSepi').innerText = res.fuzzifikasi.muP.sepi.toFixed(2);
+      document.getElementById('muJualNormal').innerText = res.fuzzifikasi.muP.normal.toFixed(2);
+      document.getElementById('muJualLaris').innerText = res.fuzzifikasi.muP.laris.toFixed(2);
+
+      document.getElementById('outputDiskon').innerText = res.perhitungan.diskonFormatted + '%';
+      document.getElementById('outputStrategi').innerText = res.rekomendasi.strategiPromo;
+      document.getElementById('outputStokAction').innerText = res.rekomendasi.aksiStok;
+
+      document.getElementById('quickMath').innerText = `= ${res.perhitungan.sumNumerator.toFixed(2)} / ${res.perhitungan.sumDenominator.toFixed(2)}`;
+
+      const badge = document.getElementById('outputBadge');
+      badge.innerText = res.rekomendasi.tier;
+
+      document.getElementById('linkDetailHasil').href = `hasil.html?stok=${s}&penjualan=${p}`;
+
+      createFuzzyChart('chartStok', 'stok', s);
+      createFuzzyChart('chartPenjualan', 'penjualan', p);
+    }
+
+    function submitToResult() {
+      const s = document.getElementById('inputStok').value;
+      const p = document.getElementById('inputPenjualan').value;
+      window.location.href = `hasil.html?stok=${s}&penjualan=${p}`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      recalculate();
+    });
+  </script>
 </body>
 </html>
